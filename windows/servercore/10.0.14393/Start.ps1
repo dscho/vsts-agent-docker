@@ -14,7 +14,11 @@ if ($env:VSTS_AGENT -ne $null) {
     $env:VSTS_AGENT = $($env:VSTS_AGENT)
 }
 else {
-    $env:VSTS_AGENT = $env:COMPUTERNAME
+    if ($env:HOST_COMPUTERNAME -ne $null) {
+        $env:VSTS_AGENT = "$env:HOST_COMPUTERNAME-$env:COMPUTERNAME"
+    } else {
+        $env:VSTS_AGENT = $env:COMPUTERNAME
+    }
 }
 
 if ($env:VSTS_WORK -ne $null)
