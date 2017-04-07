@@ -1,8 +1,13 @@
 FROM microsoft/windowsservercore:10.0.14393.693
 ENV WINDOWS_IMAGE_VERSION=10.0.14393.693
+ARG VSTS_ACCOUNT
+ARG VSTS_TOKEN
 
 RUN mkdir C:\BuildAgent
 WORKDIR C:/BuildAgent
-COPY ./Start.* ./
 
-CMD ["powershell", "-command", ".\\Start.ps1"]
+COPY ./GetAgent.ps1 ./
+RUN ["powershell", "-command", ".\\GetAgent.ps1"]
+
+COPY ./StartAgent.ps1 ./
+CMD ["powershell", "-command", ".\\StartAgent.ps1"]
