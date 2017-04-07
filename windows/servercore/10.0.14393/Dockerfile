@@ -5,4 +5,4 @@ RUN mkdir C:\BuildAgent
 WORKDIR C:/BuildAgent
 COPY ./Start.* ./
 
-CMD ["Start.cmd"]
+CMD ["powershell", "-command", ".\\Start.ps1"]
