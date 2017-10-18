@@ -1,30 +1,23 @@
 $ErrorActionPreference = "Stop"
 
-If ($env:VSTS_ACCOUNT -eq $null) {
-    Write-Error "Missing VSTS_ACCOUNT environment variable"
-    exit 1
-}
-
-if ($env:VSTS_TOKEN -eq $null) {
-    Write-Error "Missing VSTS_TOKEN environment variable"
-    exit 1
-}
+$agentdir = "C:\BuildAgent"
 
 $useragent = 'vsts-windowscontainer'
-$creds = [System.Convert]::ToBase64String([System.Text.Encoding]::ASCII.GetBytes($("user:$env:VSTS_TOKEN")))
-$encodedAuthValue = "Basic $creds"
 $acceptHeaderValue = "application/json;api-version=3.0-preview"
-$headers = @{Authorization = $encodedAuthValue;Accept = $acceptHeaderValue }
-$vstsUrl = "https://$env:VSTS_ACCOUNT.visualstudio.com/_apis/distributedtask/packages/agent?platform=win7-x64&`$top=1"
-$response = Invoke-WebRequest -UseBasicParsing -Headers $headers -Uri $vstsUrl -UserAgent $useragent
+$headers = @{Accept = $acceptHeaderValue }
+$url = "https://api.github.com/repos/Microsoft/vsts-agent/releases/latest"
+$response = Invoke-WebRequest -UseBasicParsing -Headers $headers -Uri $url -UserAgent $useragent
 
 $response = ConvertFrom-Json $response.Content
 
-Write-Host "Download agent to C:\BuildAgent\agent.zip"
-Invoke-WebRequest -Uri $response.value[0].downloadUrl -OutFile C:\BuildAgent\agent.zip
+$url = ""
+$response.assets | Foreach-Object { if ($_.name -match "^vsts-agent-win7-x64") { $url = $_.browser_download_url } }
+
+Write-Host "Download agent to $agentdir\agent.zip"
+Invoke-WebRequest -Uri $url -OutFile $agentdir\agent.zip
 
 Write-Host "Extract agent.zip"
-Expand-Archive -Path C:\BuildAgent\agent.zip -DestinationPath C:\BuildAgent
+Expand-Archive -Path $agentdir\agent.zip -DestinationPath $agentdir
 
 Write-Host "Deleting agent.zip"
-Remove-Item -Path C:\BuildAgent\agent.zip
+Remove-Item -Path $agentdir\agent.zip

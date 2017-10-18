@@ -1,6 +1,4 @@
 FROM microsoft/windowsservercore:latest
-ARG VSTS_ACCOUNT
-ARG VSTS_TOKEN
 
 RUN mkdir C:\BuildAgent
 WORKDIR C:/BuildAgent
