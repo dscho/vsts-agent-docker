@@ -1,5 +1,4 @@
-FROM microsoft/windowsservercore:10.0.14393.693
-ENV WINDOWS_IMAGE_VERSION=10.0.14393.693
+FROM microsoft/windowsservercore:latest
 ARG VSTS_ACCOUNT
 ARG VSTS_TOKEN
 
