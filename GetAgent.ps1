@@ -6,6 +6,7 @@ $useragent = 'vsts-windowscontainer'
 $acceptHeaderValue = "application/json;api-version=3.0-preview"
 $headers = @{Accept = $acceptHeaderValue }
 $url = "https://api.github.com/repos/Microsoft/vsts-agent/releases/latest"
+[Net.ServicePointManager]::SecurityProtocol |= [Net.SecurityProtocolType]::Tls12
 $response = Invoke-WebRequest -UseBasicParsing -Headers $headers -Uri $url -UserAgent $useragent
 
 $response = ConvertFrom-Json $response.Content
