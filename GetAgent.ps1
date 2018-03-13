@@ -13,6 +13,9 @@ $response = ConvertFrom-Json $response.Content
 
 $url = ""
 $response.assets | Foreach-Object { if ($_.name -match "^vsts-agent-win7-x64") { $url = $_.browser_download_url } }
+if ($url -eq '') {
+    $url = $response.body.split("[()]") | Where-Object { $_ -match "https://.*vsts-agent-win.*\.zip" }
+}
 
 Write-Host "Download agent to $agentdir\agent.zip"
 Invoke-WebRequest -Uri $url -OutFile $agentdir\agent.zip
